@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Save } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userSchema } from "../lib/schema";
 import axios from "axios";
 import toast from "react-hot-toast";
+import {API_BASE_URL} from '../common/apiUrl'
+
 
 const AddUser = () => {
   const navigate = useNavigate();
@@ -36,10 +38,9 @@ const AddUser = () => {
 
     try {
       const { data: newUser, status } = await axios.post(
-        "https://jsonplaceholder.typicode.com/users",
+        API_BASE_URL,
         structuredData,
         {
-          
           headers: {
             "Content-Type": "application/json",
           },

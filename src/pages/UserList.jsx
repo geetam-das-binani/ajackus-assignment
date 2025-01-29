@@ -1,25 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Pencil, Trash2, UserPlus, Search, ArrowUpDown } from "lucide-react";
+import { UserPlus, Search } from "lucide-react";
 import Pagination from "../components/Pagination";
 import axios from "axios";
 import toast from "react-hot-toast";
-
-function UserList() {
-  const navigate = useNavigate();
+import { API_BASE_URL } from "../common/apiUrl";
+import TableBody from "../common/TableBody";
+import TableHead from "../common/TableHead";
+import { tableHeadingLabels } from "../common/labels";
+const UserList = () => {
   const [users, setUsers] = useState([]);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  // const [sortField, setSortField] = useState(null);
-  // const [sortDirection, setSortDirection] = useState("asc");
+  const [loading,setLoading]=useState(false)
   const usersPerPage = 5;
 
   const handleDelete = async (userId) => {
     try {
-      const response = await axios.delete(
-        `https://jsonplaceholder.typicode.com/users/${userId}`
-      );
+      const response = await axios.delete(`${API_BASE_URL}/${userId}`);
       if (response.status === 200) {
         toast.success("User deleted successfully!");
         fetchUsers();
@@ -29,31 +26,12 @@ function UserList() {
     }
   };
 
-  // const handleSort = (field) => {
-  //   if (sortField === field) {
-  //     setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-  //   } else {
-  //     setSortField(field);
-  //     setSortDirection("asc");
-  //   }
-  // };
-
   // Filter and sort users
   const filteredUsers = users.filter((user) => {
     return Object.values(user).some((value) =>
       value.toString().toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
-
-  // if (sortField) {
-  //   filteredUsers.sort((a, b) => {
-  //     const aValue = a[sortField].toString().toLowerCase();
-  //     const bValue = b[sortField].toString().toLowerCase();
-  //     return sortDirection === "asc"
-  //       ? aValue.localeCompare(bValue)
-  //       : bValue.localeCompare(aValue);
-  //   });
-  // }
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
@@ -63,20 +41,10 @@ function UserList() {
     currentPage * 5
   );
 
-  // const SortIcon = ({ field }) => (
-  //   <ArrowUpDown
-  //     className={`inline-block h-4 w-4 cursor-pointer transition-colors
-  //       ${sortField === field ? "text-indigo-600" : "text-gray-400"}`}
-  //     onClick={() => handleSort(field)}
-  //   />
-  // );
-
   const fetchUsers = async () => {
     try {
-      const { data } = await axios(
-        "https://jsonplaceholder.typicode.com/users"
-      );
-      //   console.log(data);
+      const { data } = await axios(API_BASE_URL);
+
       setUsers(data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -99,7 +67,7 @@ function UserList() {
           </button>
         </div>
 
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+        {/* <div className="bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="p-4 border-b border-gray-200">
             <div className="relative">
               <input
@@ -116,83 +84,17 @@ function UserList() {
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
-                <tr>
-                  <th className="group px-6 py-4 text-left">
-                    <div className="flex items-center space-x-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      <span>ID</span>
-                      {/* <SortIcon field="id" /> */}
-                    </div>
-                  </th>
-                  <th className="group px-6 py-4 text-left">
-                    <div className="flex items-center space-x-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      <span>First Name</span>
-                      {/* <SortIcon field="firstName" /> */}
-                    </div>
-                  </th>
-                  <th className="group px-6 py-4 text-left">
-                    <div className="flex items-center space-x-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      <span>Username</span>
-                      {/* <SortIcon field="username" /> */}
-                    </div>
-                  </th>
-                  <th className="group hidden sm:table-cell px-6 py-4 text-left">
-                    <div className="flex items-center space-x-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      <span>Email</span>
-                      {/* <SortIcon field="email" /> */}
-                    </div>
-                  </th>
-                  <th className="group hidden md:table-cell px-6 py-4 text-left">
-                    <div className="flex items-center space-x-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      <span>Company Name</span>
-                      {/* <SortIcon field="department" /> */}
-                    </div>
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
+                <TableHead {...tableHeadingLabels} />
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {currentUsers.map((user) => (
-                  <tr
-                    key={user.id}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {user.id}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.name}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.username}
-                    </td>
-                    <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.email}
-                    </td>
-                    <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                        {user.company.name}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-3">
-                        <button
-                          onClick={() => navigate(`/edit/${user.id}`)}
-                          className="text-indigo-600 hover:text-indigo-900 transition-colors"
-                        >
-                          <Pencil className="h-5 w-5" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(user.id)}
-                          className="text-red-600 hover:text-red-900 transition-colors"
-                        >
-                          <Trash2 className="h-5 w-5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {currentUsers.length > 0 &&
+                  currentUsers?.map((user) => (
+                    <TableBody
+                      key={user.id}
+                      {...user}
+                      handleDelete={handleDelete}
+                    />
+                  ))}
               </tbody>
             </table>
           </div>
@@ -202,10 +104,10 @@ function UserList() {
             totalPages={totalPages}
             onPageChange={setCurrentPage}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );
-}
+};
 
 export default UserList;

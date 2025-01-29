@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { userSchema } from "../lib/schema";
 import toast from "react-hot-toast";
 import axios from "axios";
+import {API_BASE_URL} from '../common/apiUrl'
 
 const EditUser = () => {
   const { userId } = useParams();
@@ -37,15 +38,11 @@ const EditUser = () => {
     };
 
     try {
-      await axios.put(
-        `https://jsonplaceholder.typicode.com/users/${userId}`,
-        structuredData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await axios.put(`${API_BASE_URL}/${userId}`, structuredData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       navigate("/");
       reset();
       toast.success("User edited successfully!");
@@ -57,9 +54,11 @@ const EditUser = () => {
 
   const fetchUser = async () => {
     try {
-      const { data, status } = await axios.get(
-        `https://jsonplaceholder.typicode.com/users/${userId}`
-      );
+      const { data, status } = await axios.get(`${API_BASE_URL}/${userId}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (status === 200) {
         const structuredData = {
