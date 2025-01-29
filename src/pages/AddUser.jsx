@@ -6,8 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { userSchema } from "../lib/schema";
 import axios from "axios";
 import toast from "react-hot-toast";
-import {API_BASE_URL} from '../common/apiUrl'
-
+import { API_BASE_URL } from "../common/apiUrl";
+import InputField from "../common/InputField";
 
 const AddUser = () => {
   const navigate = useNavigate();
@@ -81,107 +81,47 @@ const AddUser = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Name
-                </label>
-                <input
-                  type="text"
+                <InputField
+                  register={register}
+                  errors={errors}
                   name="name"
-                  id="name"
-                  {...register("name")}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2
-                    ${
-                      errors.name
-                        ? "border-red-300 focus:border-red-500 focus:ring-red-500"
-                        : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                    }`}
+                  labelText="Name"
+                  type="text"
+                  placeholder="Enter name"
                 />
-                {errors?.name && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.name.message}
-                  </p>
-                )}
               </div>
 
               <div>
-                <label
-                  htmlFor="Username"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  UserName
-                </label>
-                <input
-                  type="text"
+                <InputField
+                  register={register}
+                  errors={errors}
                   name="userName"
-                  id="userName"
-                  {...register("userName")}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2
-                    ${
-                      errors.userName
-                        ? "border-red-300 focus:border-red-500 focus:ring-red-500"
-                        : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                    }`}
-                />
-                {errors?.userName && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.userName.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  {...register("email")}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2
-                    ${
-                      errors.email
-                        ? "border-red-300 focus:border-red-500 focus:ring-red-500"
-                        : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                    }`}
-                />
-                {errors?.email && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="companyName"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Company Name
-                </label>
-                <input
-                  name="companyName"
-                  id="companyName"
+                  labelText="UserName"
                   type="text"
-                  {...register("companyName")}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2
-                    ${
-                      errors.companyName
-                        ? "border-red-300 focus:border-red-500 focus:ring-red-500"
-                        : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                    }`}
-                ></input>
-                {errors?.companyName && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.companyName.message}
-                  </p>
-                )}
+                  placeholder="Enter user name"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <InputField
+                  register={register}
+                  errors={errors}
+                  name="email"
+                  labelText="Email"
+                  type="email"
+                  placeholder="Enter email"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <InputField
+                  register={register}
+                  errors={errors}
+                  name="companyName"
+                  labelText="Company Name"
+                  type="text"
+                  placeholder="Enter company name"
+                />
               </div>
             </div>
 
