@@ -33,13 +33,13 @@ const TableBody = ({
         <div className="flex space-x-3">
           <button
             onClick={() => navigate(`/edit/${id}`)}
-            className="text-indigo-600 hover:text-indigo-900 transition-colors"
+            className="text-indigo-600 hover:text-indigo-900 transition-colors hover:cursor-pointer"
           >
             <Pencil className="h-5 w-5" />
           </button>
           <button
             onClick={() => handleDelete(id)}
-            className="text-red-600 hover:text-red-900 transition-colors"
+            className="text-red-600 hover:text-red-900 transition-colors hover:cursor-pointer"
           >
             <Trash2 className="h-5 w-5" />
           </button>

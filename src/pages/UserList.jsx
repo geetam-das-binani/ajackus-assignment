@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { UserPlus, Search } from "lucide-react";
 import Pagination from "../components/Pagination";
@@ -8,10 +9,11 @@ import TableBody from "../common/TableBody";
 import TableHead from "../common/TableHead";
 import { tableHeadingLabels } from "../common/labels";
 const UserList = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading,setLoading]=useState(false)
+  const [loading, setLoading] = useState(false);
   const usersPerPage = 5;
 
   const handleDelete = async (userId) => {
@@ -43,11 +45,14 @@ const UserList = () => {
 
   const fetchUsers = async () => {
     try {
+      setLoading(true);
       const { data } = await axios(API_BASE_URL);
 
       setUsers(data);
     } catch (error) {
       console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -67,44 +72,51 @@ const UserList = () => {
           </button>
         </div>
 
-        {/* <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-          <div className="p-4 border-b border-gray-200">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search by username/firstName/email"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-              />
-              <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+        {!loading && (
+          <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+            <div className="p-4 border-b border-gray-200">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search by username/firstName/email"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                />
+                <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+              </div>
             </div>
-          </div>
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <TableHead {...tableHeadingLabels} />
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {currentUsers.length > 0 &&
-                  currentUsers?.map((user) => (
-                    <TableBody
-                      key={user.id}
-                      {...user}
-                      handleDelete={handleDelete}
-                    />
-                  ))}
-              </tbody>
-            </table>
-          </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <TableHead {...tableHeadingLabels} />
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {currentUsers.length > 0 &&
+                    currentUsers?.map((user) => (
+                      <TableBody
+                        key={user.id}
+                        {...user}
+                        handleDelete={handleDelete}
+                      />
+                    ))}
+                </tbody>
+              </table>
+            </div>
 
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
-        </div> */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </div>
+        )}
+        {loading && (
+          <div className="flex items-center justify-center h-80">
+            <div className="h-32 w-32 border-t-2 border-gray-900 animate-spin  rounded-full"></div>
+          </div>
+        )}
       </div>
     </div>
   );

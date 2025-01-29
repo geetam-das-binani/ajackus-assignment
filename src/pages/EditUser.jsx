@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Save } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -6,12 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { userSchema } from "../lib/schema";
 import toast from "react-hot-toast";
 import axios from "axios";
-import {API_BASE_URL} from '../common/apiUrl'
+import { API_BASE_URL } from "../common/apiUrl";
 
 const EditUser = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -54,6 +54,7 @@ const EditUser = () => {
 
   const fetchUser = async () => {
     try {
+      setLoading(true);
       const { data, status } = await axios.get(`${API_BASE_URL}/${userId}`, {
         headers: {
           "Content-Type": "application/json",
@@ -71,6 +72,8 @@ const EditUser = () => {
       }
     } catch (error) {
       console.error("Error fetching user:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -79,148 +82,156 @@ const EditUser = () => {
   }, [userId, reset]);
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="mb-8">
-          <button
-            onClick={() => navigate("/")}
-            className="flex items-center text-gray-600 hover:text-gray-900"
-          >
-            <ArrowLeft className="h-5 w-5 mr-2" />
-            Back to Users
-          </button>
+      {loading && (
+        <div className="flex items-center justify-center h-80">
+          <div className="h-32 w-32 border-t-2 border-gray-900 animate-spin  rounded-full"></div>
         </div>
+      )}
 
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-800">Edit User</h2>
+      {!loading && (
+        <div className="max-w-3xl mx-auto">
+          <div className="mb-8">
+            <button
+              onClick={() => navigate("/")}
+              className="flex items-center text-gray-600 hover:text-gray-900"
+            >
+              <ArrowLeft className="h-5 w-5 mr-2" />
+              Back to Users
+            </button>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  {...register("name")}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2
+          <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-800">Edit User</h2>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    {...register("name")}
+                    className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2
                     ${
                       errors.name
                         ? "border-red-300 focus:border-red-500 focus:ring-red-500"
                         : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
                     }`}
-                />
-                {errors?.name && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.name.message}
-                  </p>
-                )}
-              </div>
+                  />
+                  {errors?.name && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.name.message}
+                    </p>
+                  )}
+                </div>
 
-              <div>
-                <label
-                  htmlFor="userName"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  UserName
-                </label>
-                <input
-                  type="text"
-                  name="userName"
-                  id="userName"
-                  {...register("userName")}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2
+                <div>
+                  <label
+                    htmlFor="userName"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    UserName
+                  </label>
+                  <input
+                    type="text"
+                    name="userName"
+                    id="userName"
+                    {...register("userName")}
+                    className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2
                     ${
                       errors.userName
                         ? "border-red-300 focus:border-red-500 focus:ring-red-500"
                         : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
                     }`}
-                />
-                {errors?.userName && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.userName.message}
-                  </p>
-                )}
-              </div>
+                  />
+                  {errors?.userName && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.userName.message}
+                    </p>
+                  )}
+                </div>
 
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  {...register("email")}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2
+                <div className="sm:col-span-2">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    {...register("email")}
+                    className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2
                     ${
                       errors.email
                         ? "border-red-300 focus:border-red-500 focus:ring-red-500"
                         : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
                     }`}
-                />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
+                  />
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
 
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="companyName"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Company Name
-                </label>
-                <input
-                  name="companyName"
-                  id="companyName"
-                  type="text"
-                  {...register("companyName")}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2
+                <div className="sm:col-span-2">
+                  <label
+                    htmlFor="companyName"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Company Name
+                  </label>
+                  <input
+                    name="companyName"
+                    id="companyName"
+                    type="text"
+                    {...register("companyName")}
+                    className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm p-2
                     ${
                       errors.companyName
                         ? "border-red-300 focus:border-red-500 focus:ring-red-500"
                         : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
                     }`}
-                ></input>
-                {errors?.companyName && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.companyName.message}
-                  </p>
-                )}
+                  ></input>
+                  {errors?.companyName && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.companyName.message}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
 
-            <div className="flex justify-end space-x-3">
-              <button
-                type="button"
-                onClick={() => navigate("/")}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Save className="h-4 w-4 mr-2" />
-                {isSubmitting ? "Saving..." : "Edit User"}
-              </button>
-            </div>
-          </form>
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => navigate("/")}
+                  className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  {isSubmitting ? "Saving..." : "Edit User"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

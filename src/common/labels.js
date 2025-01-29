@@ -6,3 +6,5 @@ export const tableHeadingLabels = {
   companyName: "Company Name",
   actions: "Actions",
 };
+
+
