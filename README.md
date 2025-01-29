@@ -102,7 +102,7 @@ DELETE requests simulate removing a user but don’t actually delete data.
 
   
 
-Challenges Faced
+## Challenges Faced
 
   
 
