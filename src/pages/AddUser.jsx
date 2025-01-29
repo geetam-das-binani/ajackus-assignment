@@ -8,6 +8,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { API_BASE_URL } from "../common/apiUrl";
 import InputField from "../common/InputField";
+import Button from "../common/Button";
 
 const AddUser = () => {
   const navigate = useNavigate();
@@ -37,17 +38,12 @@ const AddUser = () => {
     };
 
     try {
-      const { data: newUser, status } = await axios.post(
-        API_BASE_URL,
-        structuredData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const { status } = await axios.post(API_BASE_URL, structuredData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (status === 201) {
-        console.log("User added:", newUser);
         navigate("/");
         reset();
         toast.success("User added successfully!");
@@ -64,7 +60,7 @@ const AddUser = () => {
         <div className="mb-8">
           <button
             onClick={() => navigate("/")}
-            className="flex items-center text-gray-600 hover:text-gray-900"
+            className="flex items-center text-gray-600 hover:text-gray-900 hover:cursor-pointer"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
             Back to Users
@@ -126,21 +122,19 @@ const AddUser = () => {
             </div>
 
             <div className="flex justify-end space-x-3">
-              <button
+              <Button
                 type="button"
-                onClick={() => navigate("/")}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
+                buttonText={"Cancel"}
+                navigate={navigate}
+                isIcon={false}
+              />
+
+              <Button
+                type={"submit"}
                 disabled={isSubmitting}
-                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                <Save className="h-4 w-4 mr-2" />
-                {isSubmitting ? "Saving..." : "Save User"}
-              </button>
+                isIcon={true}
+                buttonText={isSubmitting ? "Saving..." : "Add User"}
+              />
             </div>
           </form>
         </div>

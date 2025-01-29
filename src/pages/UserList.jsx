@@ -5,9 +5,9 @@ import Pagination from "../components/Pagination";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { API_BASE_URL } from "../common/apiUrl";
-import TableBody from "../common/TableBody";
-import TableHead from "../common/TableHead";
 import { tableHeadingLabels } from "../common/labels";
+import TableHead from "../components/TableHead";
+import TableBody from "../components/TableBody";
 const UserList = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
