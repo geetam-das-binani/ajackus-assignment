@@ -15,6 +15,7 @@ export const ContextProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const handleAddUser = (newUser) => {
+    // local flag is used so as to identify locally added users 
     setUsers((prevUsers) => [...prevUsers, { ...newUser, local: true }]);
  };
  

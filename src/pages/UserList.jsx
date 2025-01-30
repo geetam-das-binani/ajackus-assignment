@@ -32,13 +32,13 @@ const UserList = () => {
     }
   };
 
-  // Filter and sort users
+  // Filter  users based on search results
   const filteredUsers = users.filter((user) => {
-    return (
-      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    return Object.keys(user).some((key) => {
+      const value = user[key].toString();
+
+      return value.toLowerCase().includes(searchTerm.toLowerCase());
+    });
   });
 
   // Calculate pagination

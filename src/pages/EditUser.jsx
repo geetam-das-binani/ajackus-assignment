@@ -41,6 +41,7 @@ const EditUser = () => {
       },
       id: Number(userId),
     };
+    // if user is already present just update 
     const existingUser = users.find((user) => user.id === Number(userId));
     if (existingUser?.local) {
       setUsers(
@@ -101,6 +102,7 @@ const EditUser = () => {
   useEffect(() => {
     const existingUser = users.find((user) => user.id === Number(userId));
 
+    // if user is local added manually then reset the form with existing data else call the api 
     if (existingUser?.local) {
       reset({
         name: existingUser.name,
