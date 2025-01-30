@@ -41,7 +41,7 @@ const EditUser = () => {
       },
       id: Number(userId),
     };
-    // if user is already present just update 
+    // if user is already present just update
     const existingUser = users.find((user) => user.id === Number(userId));
     if (existingUser?.local) {
       setUsers(
@@ -77,20 +77,21 @@ const EditUser = () => {
   const fetchUser = async () => {
     try {
       setLoading(true);
-      const { data, status } = await axios.get(`${API_BASE_URL}/${userId}`, {
+      const { status } = await axios.get(`${API_BASE_URL}/${userId}`, {
         headers: {
           "Content-Type": "application/json",
         },
       });
 
       if (status === 200) {
-        const structuredData = {
-          name: data.name,
-          userName: data.username,
-          email: data.email,
-          companyName: data.company.name,
-        };
-        reset(structuredData);
+        const existingUser = users.find((user) => user.id === Number(userId));
+
+        reset({
+          name: existingUser.name,
+          userName: existingUser.username,
+          email: existingUser.email,
+          companyName: existingUser.company.name,
+        });
       }
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -102,7 +103,7 @@ const EditUser = () => {
   useEffect(() => {
     const existingUser = users.find((user) => user.id === Number(userId));
 
-    // if user is local added manually then reset the form with existing data else call the api 
+    // if user is local added manually then reset the form with existing data else call the api
     if (existingUser?.local) {
       reset({
         name: existingUser.name,
