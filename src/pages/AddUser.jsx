@@ -9,9 +9,11 @@ import toast from "react-hot-toast";
 import { API_BASE_URL } from "../common/apiUrl";
 import InputField from "../common/InputField";
 import Button from "../common/Button";
+import { useStateContext } from "../context/User";
 
 const AddUser = () => {
   const navigate = useNavigate();
+  const { handleAddUser, users } = useStateContext();
   const {
     register,
     handleSubmit,
@@ -28,7 +30,10 @@ const AddUser = () => {
   });
 
   const onSubmit = async (data) => {
+    const lastUserId =
+      users.length > 0 ? Math.max(...users.map((user) => user.id)) : 10;
     const structuredData = {
+      id: lastUserId + 1,
       name: data.name.trim(),
       username: data.userName.trim(),
       email: data.email.trim(),
@@ -44,9 +49,11 @@ const AddUser = () => {
         },
       });
       if (status === 201) {
+        toast.success("User added successfully!");
+        handleAddUser(structuredData);
+
         navigate("/");
         reset();
-        toast.success("User added successfully!");
       }
     } catch (error) {
       console.error("Error saving user:", error);
@@ -134,6 +141,7 @@ const AddUser = () => {
                 disabled={isSubmitting}
                 isIcon={true}
                 buttonText={isSubmitting ? "Saving..." : "Add User"}
+                navigate={navigate}
               />
             </div>
           </form>

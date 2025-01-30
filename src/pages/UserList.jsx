@@ -1,27 +1,31 @@
 import { useNavigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { UserPlus, Search } from "lucide-react";
 import Pagination from "../components/Pagination";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { API_BASE_URL } from "../common/apiUrl";
 import { tableHeadingLabels } from "../common/labels";
 import TableHead from "../components/TableHead";
 import TableBody from "../components/TableBody";
+import { useStateContext } from "../context/User";
+import { API_BASE_URL } from "../common/apiUrl";
 const UserList = () => {
   const navigate = useNavigate();
-  const [users, setUsers] = useState([]);
+
+  const { users, loading, setUsers } = useStateContext();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(false);
   const usersPerPage = 5;
 
   const handleDelete = async (userId) => {
     try {
       const response = await axios.delete(`${API_BASE_URL}/${userId}`);
       if (response.status === 200) {
+        setUsers((prevUsers) =>
+          prevUsers.filter((user) => user.id !== Number(userId))
+        );
+        setCurrentPage(1);
         toast.success("User deleted successfully!");
-        fetchUsers();
       }
     } catch (error) {
       toast.error("Failed to delete user. Please try again.");
@@ -30,8 +34,10 @@ const UserList = () => {
 
   // Filter and sort users
   const filteredUsers = users.filter((user) => {
-    return Object.values(user).some((value) =>
-      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    return (
+      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
 
@@ -43,21 +49,6 @@ const UserList = () => {
     currentPage * 5
   );
 
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-      const { data } = await axios(API_BASE_URL);
-
-      setUsers(data);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  useEffect(() => {
-    fetchUsers();
-  }, []);
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">

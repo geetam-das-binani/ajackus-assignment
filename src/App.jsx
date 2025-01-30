@@ -7,14 +7,13 @@ import { Toaster } from "react-hot-toast";
 const App = () => {
   return (
     <div>
-       <Routes>
-      <Route path="/" element={<UserList />} />
-      <Route path="/edit/:userId" element={<EditUser />} />
-      <Route path="/add" element={<AddUser />} />
-    </Routes>
-    <Toaster/>
+      <Routes>
+        <Route path="/" element={<UserList />} />
+        <Route path="/edit/:userId" element={<EditUser />} />
+        <Route path="/add" element={<AddUser />} />
+      </Routes>
+      <Toaster />
     </div>
-   
   );
 };
 

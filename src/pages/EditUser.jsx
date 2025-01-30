@@ -9,10 +9,12 @@ import axios from "axios";
 import { API_BASE_URL } from "../common/apiUrl";
 import InputField from "../common/InputField";
 import Button from "../common/Button";
+import { useStateContext } from "../context/User";
 
 const EditUser = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
+  const { users, setUsers } = useStateContext();
   const [loading, setLoading] = useState(false);
   const {
     register,
@@ -37,14 +39,31 @@ const EditUser = () => {
       company: {
         name: data.companyName.trim(),
       },
+      id: Number(userId),
     };
+    const existingUser = users.find((user) => user.id === Number(userId));
+    if (existingUser?.local) {
+      setUsers(
+        users.map((user) =>
+          user.id === Number(userId) ? structuredData : user
+        )
+      );
 
+      reset();
+      toast.success("User edited successfully!");
+      return navigate("/");
+    }
     try {
       await axios.put(`${API_BASE_URL}/${userId}`, structuredData, {
         headers: {
           "Content-Type": "application/json",
         },
       });
+      setUsers(
+        users.map((user) =>
+          user.id === Number(userId) ? structuredData : user
+        )
+      );
       navigate("/");
       reset();
       toast.success("User edited successfully!");
@@ -80,7 +99,18 @@ const EditUser = () => {
   };
 
   useEffect(() => {
-    fetchUser();
+    const existingUser = users.find((user) => user.id === Number(userId));
+
+    if (existingUser?.local) {
+      reset({
+        name: existingUser.name,
+        userName: existingUser.username,
+        email: existingUser.email,
+        companyName: existingUser.company.name,
+      });
+    } else {
+      fetchUser();
+    }
   }, [userId, reset]);
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -167,6 +197,7 @@ const EditUser = () => {
                   disabled={isSubmitting}
                   isIcon={true}
                   buttonText={isSubmitting ? "Saving..." : "Edit User"}
+                  navigate={navigate}
                 />
               </div>
             </form>
